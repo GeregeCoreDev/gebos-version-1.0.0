@@ -62,11 +62,6 @@ setup(
             "myst-parser>=2.0.0",
         ],
     },
-    entry_points={
-        "console_scripts": [
-            "gebos=gebos.cli:main",
-        ],
-    },
     include_package_data=True,
     keywords=[
         "erp", "ai", "machine-learning", "business", "automation",

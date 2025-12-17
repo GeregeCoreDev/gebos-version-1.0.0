@@ -62,7 +62,24 @@ class GEBOS:
         Returns:
             dict: Prediction results with confidence intervals
         """
-        return self.ai.predictive.predict(metric, timeframe, **kwargs)
+        # Route to appropriate prediction method based on metric
+        metric_methods = {
+            'revenue': self.ai.predictive.predict_revenue,
+            'sales': self.ai.predictive.predict_sales,
+            'demand': lambda timeframe, **kw: self.ai.predictive.predict_demand(
+                kw.get('product_id', 'default'), timeframe
+            ),
+            'churn': self.ai.predictive.predict_churn,
+            'cash_flow': lambda timeframe, **kw: self.ai.predictive.predict_cash_flow(
+                months=kw.get('months', 3)
+            ),
+        }
+        
+        method = metric_methods.get(metric.lower())
+        if method:
+            return method(timeframe, **kwargs)
+        else:
+            return {'error': f'Unknown metric: {metric}'}
     
     def automate(self, workflow_name, **params):
         """
